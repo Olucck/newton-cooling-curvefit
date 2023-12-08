@@ -1,0 +1,43 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
+
+# Placing data on respective axes
+# x-axis = Time (s)
+# y-axis = Temperature (°C)
+x = [  ]
+y = [  ]
+
+# Defining the fitting function
+def func(t, T0, Ta, k):
+    return Ta + (T0 - Ta) * np.exp(-k * t)
+
+# Performing the curve fit
+parameters, covariance = curve_fit(func, x, y, p0=[0, 0, 0])
+
+# Adjusted parameters
+T0fit, Tafit, kfit = parameters
+
+# Creating a scatter plot of the data and the curve fit
+plt.scatter(x, y, label='Experimental Data')
+plt.plot(x, func(np.array(x), T0fit, Tafit, kfit), 'r', label='Curve Fit')
+plt.xlabel('Time (s)')
+plt.ylabel('Temperature (°C)')
+plt.legend()
+plt.grid(True)
+plt.title('Temperature vs Time')
+plt.show()
+
+# Extracting the covariance matrix to calculate errors
+covariance_matrix = covariance
+error_T0, error_Ta, error_k = np.sqrt(np.diag(covariance_matrix))
+
+# Printing the results and errors
+print('Fit Results:')
+print('Initial Temperature (T0):', T0fit, '°C')
+print('Ambient Temperature (Ta):', Tafit, '°C')
+print('Decay Constant (k):', kfit)
+print('Errors:')
+print('Error in T0:', error_T0)
+print('Error in Ta:', error_Ta)
+print('Error in k:', error_k)
